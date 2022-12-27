@@ -90,12 +90,12 @@ class CSharpCodeGenerator {
         }
         fullPath = basePath + '/' + elem.name + '.cs'
         codeWriter = new codegen.CodeWriter(this.getIndentString(options))
-        codeWriter.writeLine()
-        codeWriter.writeLine('using System;')
-        codeWriter.writeLine('using System.Collections.Generic;')
-        codeWriter.writeLine('using System.Linq;')
-        codeWriter.writeLine('using System.Text;')
-        codeWriter.writeLine()
+        // codeWriter.writeLine()
+        // codeWriter.writeLine('using System;')
+        // codeWriter.writeLine('using System.Collections.Generic;')
+        // codeWriter.writeLine('using System.Linq;')
+        // codeWriter.writeLine('using System.Text;')
+        // codeWriter.writeLine()
         // this.writeAnnotationType(codeWriter, elem, options, isAnnotationType);
         this.writeNamespace('writeAnnotationType', codeWriter, elem, options, isAnnotationType)
         fs.writeFileSync(fullPath, codeWriter.getData())
@@ -103,12 +103,12 @@ class CSharpCodeGenerator {
         // Class
         fullPath = path.join(basePath, elem.name + '.cs')
         codeWriter = new codegen.CodeWriter(this.getIndentString(options))
-        codeWriter.writeLine()
-        codeWriter.writeLine('using System;')
-        codeWriter.writeLine('using System.Collections.Generic;')
-        codeWriter.writeLine('using System.Linq;')
-        codeWriter.writeLine('using System.Text;')
-        codeWriter.writeLine()
+        // codeWriter.writeLine()
+        // codeWriter.writeLine('using System;')
+        // codeWriter.writeLine('using System.Collections.Generic;')
+        // codeWriter.writeLine('using System.Linq;')
+        // codeWriter.writeLine('using System.Text;')
+        // codeWriter.writeLine()
         // this.writeClass(codeWriter, elem, options, isAnnotationType);
         this.writeNamespace('writeClass', codeWriter, elem, options, isAnnotationType)
         fs.writeFileSync(fullPath, codeWriter.getData())
@@ -117,12 +117,12 @@ class CSharpCodeGenerator {
       // Interface
       fullPath = basePath + '/' + elem.name + '.cs'
       codeWriter = new codegen.CodeWriter(this.getIndentString(options))
-      codeWriter.writeLine()
-      codeWriter.writeLine('using System;')
-      codeWriter.writeLine('using System.Collections.Generic;')
-      codeWriter.writeLine('using System.Linq;')
-      codeWriter.writeLine('using System.Text;')
-      codeWriter.writeLine()
+      // codeWriter.writeLine()
+      // codeWriter.writeLine('using System;')
+      // codeWriter.writeLine('using System.Collections.Generic;')
+      // codeWriter.writeLine('using System.Linq;')
+      // codeWriter.writeLine('using System.Text;')
+      // codeWriter.writeLine()
       // this.writeInterface(codeWriter, elem, options);
       this.writeNamespace('writeInterface', codeWriter, elem, options, isAnnotationType)
       fs.writeFileSync(fullPath, codeWriter.getData())
@@ -130,7 +130,7 @@ class CSharpCodeGenerator {
       // Enum
       fullPath = basePath + '/' + elem.name + '.cs'
       codeWriter = new codegen.CodeWriter(this.getIndentString(options))
-      codeWriter.writeLine()
+      // codeWriter.writeLine()
       // this.writeEnum(codeWriter, elem, options);
       this.writeNamespace('writeEnum', codeWriter, elem, options, isAnnotationType)
       fs.writeFileSync(fullPath, codeWriter.getData())
@@ -150,7 +150,8 @@ class CSharpCodeGenerator {
       path = elem._parent.getPath(this.baseModel).map(function (e) { return e.name }).join('.')
     }
     if (path) {
-      codeWriter.writeLine('namespace ' + path + '{')
+      codeWriter.writeLine('namespace ' + path)
+      codeWriter.writeLine('{')
       codeWriter.indent()
     }
     if (writeFunction === 'writeAnnotationType') {
@@ -256,7 +257,7 @@ class CSharpCodeGenerator {
 
     // Methods
     for (i = 0, len = elem.operations.length; i < len; i++) {
-      this.writeMethod(codeWriter, elem.operations[i], options, true, false, true)
+      this.writeMethod(codeWriter, elem.operations[i], options, true, false)
       codeWriter.writeLine()
     }
 
@@ -319,8 +320,8 @@ class CSharpCodeGenerator {
     codeWriter.indent()
 
     // Constructor
-    this.writeConstructor(codeWriter, elem, options)
-    codeWriter.writeLine()
+    // this.writeConstructor(codeWriter, elem, options)
+    // codeWriter.writeLine()
 
     // Member Variables
     // (from attributes)
@@ -346,7 +347,7 @@ class CSharpCodeGenerator {
 
     // Methods
     for (i = 0, len = elem.operations.length; i < len; i++) {
-      this.writeMethod(codeWriter, elem.operations[i], options, false, false, false)
+      this.writeMethod(codeWriter, elem.operations[i], options, false, false)
       codeWriter.writeLine()
     }
 
@@ -422,13 +423,13 @@ class CSharpCodeGenerator {
       }
     }
 
-    codeWriter.writeLine(terms.join(' ') + ' {')
-    codeWriter.writeLine()
+    codeWriter.writeLine(terms.join(' '))
+    codeWriter.writeLine('{')
     codeWriter.indent()
 
     // Constructor
-    this.writeConstructor(codeWriter, elem, options)
-    codeWriter.writeLine()
+    // this.writeConstructor(codeWriter, elem, options)
+    // codeWriter.writeLine()
 
     // Member Variables
     // (from attributes)
@@ -454,7 +455,7 @@ class CSharpCodeGenerator {
 
     // Methods
     for (i = 0, len = elem.operations.length; i < len; i++) {
-      this.writeMethod(codeWriter, elem.operations[i], options, false, false, false)
+      this.writeMethod(codeWriter, elem.operations[i], options, false, false)
       codeWriter.writeLine()
     }
 
@@ -489,7 +490,7 @@ class CSharpCodeGenerator {
    * @param {boolean} skipBody
    * @param {boolean} skipParams
    */
-  writeMethod (codeWriter, elem, options, skipBody, skipParams, skipModifiers) {
+  writeMethod (codeWriter, elem, options, skipBody, skipParams) {
     if (elem.name.length > 0) {
       var terms = []
       var params = elem.getNonReturnParameters()
@@ -505,12 +506,10 @@ class CSharpCodeGenerator {
       }
       this.writeDoc(codeWriter, doc, options)
 
-      if (!skipModifiers) {
-        // modifiers
-        var _modifiers = this.getModifiers(elem)
-        if (_modifiers.length > 0) {
-          terms.push(_modifiers.join(' '))
-        }
+      // modifiers
+      var _modifiers = this.getModifiers(elem)
+      if (_modifiers.length > 0) {
+        terms.push(_modifiers.join(' '))
       }
 
       // type
@@ -539,7 +538,8 @@ class CSharpCodeGenerator {
       if (skipBody === true || _modifiers.includes('abstract')) {
         codeWriter.writeLine(terms.join(' ') + ';')
       } else {
-        codeWriter.writeLine(terms.join(' ') + ' {')
+        codeWriter.writeLine(terms.join(' '))
+        codeWriter.writeLine('{')
         codeWriter.indent()
         codeWriter.writeLine('// TODO implement here')
 
@@ -635,16 +635,15 @@ class CSharpCodeGenerator {
 
       // property
       if (elem.stereotype === 'property' || (options.propertiesByDefault && codegen.isEmpty(elem.stereotype))) {
-        codeWriter.writeLine(terms.join(' ') + ' {')
-        codeWriter.indent()
-        if (elem.isReadOnly) {
-          codeWriter.writeLine('get {')
-          codeWriter.writeLine('}')
-        } else {
-          codeWriter.writeLine('get; set;')
-        }
-        codeWriter.outdent()
-        codeWriter.writeLine('}')
+        codeWriter.writeLine(terms.join(' ') + ' { '+(elem.isReadOnly?'get;':'get; set;')+' }')
+        // codeWriter.indent()
+        // if (elem.isReadOnly) {
+        //   codeWriter.writeLine('get;')
+        // } else {
+        //   codeWriter.writeLine('get; set;')
+        // }
+        // codeWriter.outdent()
+        // codeWriter.writeLine('}')
       } else {
         codeWriter.writeLine(terms.join(' ') + ';')
       }
